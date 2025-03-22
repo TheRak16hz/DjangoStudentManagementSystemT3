@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container my-5">
+    <h2 class="text-center mb-4">Lista de Estudiantes Inactivos</h2>
+
+    {% if estudiantes_inactivos %}
+    <ul class="list-group">
+        {% for est in estudiantes_inactivos %}
+        {% if not est.status %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>
+                {{ est.nombre }} - {{ est.cedula }} 
+                <span class="badge bg-danger">Inactivo</span>
+            </span>
+            <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-primary">Editar</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-info text-center" role="alert">
+        No hay estudiantes inactivos.
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'estudiantes_ver_todos' %}" class="btn btn-secondary">Volver a la lista de estudiantes</a>
+    </div>
+</main>
+{% endblock %}

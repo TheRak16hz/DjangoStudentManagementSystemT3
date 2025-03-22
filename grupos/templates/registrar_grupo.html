@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center text-primary mb-4">Registrar Grupo</h1>
+
+            <!-- Enlace para volver a la lista de grupos -->
+            <div class="d-flex justify-content-end mb-3">
+                <a href="{% url 'grupos_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Volver a la lista de grupos
+                </a>
+            </div>
+            <!-- Botón para registrar -->
+            
+            <!-- Formulario de registro de grupo -->
+            <div class="card shadow-sm p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="text-center">
+                        <button type="submit" id="submit-btn" class="btn btn-success">
+                             Registrar Grupo
+                        </button>
+                    </div>
+                    <!-- Renderiza el formulario de Django -->
+                    <div class="mb-4">
+                        {{ form.as_p }}
+                    </div>
+                    
+                    <!-- Sección de selección de estudiantes -->
+                    <div id="estudiantes-list" class="mb-4">
+                        <h5 class="text-primary mb-3">Selecciona un máximo de 4 estudiantes:</h5>
+                        {% for estudiante in estudiantes %}
+                        <div class="form-check mb-2">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input estudiante-checkbox" 
+                                id="estudiante_{{ estudiante.id }}" 
+                                name="estudiantes" 
+                                value="{{ estudiante.id }}" 
+                                {% if estudiante.id|stringformat:"s" in ids_estudiantes_grupos %}disabled{% endif %}>
+                            <label class="form-check-label" for="estudiante_{{ estudiante.id }}">
+                                <strong>{{ estudiante.cedula }}</strong> - {{ estudiante.nombre }}
+                                {% if estudiante.id|stringformat:"s" in ids_estudiantes_grupos %}
+                                    <span class="badge bg-danger ms-2">Asignado</span>
+                                {% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para controlar la selección de estudiantes -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.estudiante-checkbox');
+        const submitButton = document.getElementById('submit-btn');
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const selected = document.querySelectorAll('.estudiante-checkbox:checked');
+                
+                if (selected.length >= 4) {
+                    checkboxes.forEach(function(cb) {
+                        if (!cb.checked) {
+                            cb.disabled = true;
+                        }
+                    });
+                } else {
+                    checkboxes.forEach(function(cb) {
+                        if (!cb.disabled) {
+                            cb.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

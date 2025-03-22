@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center">Editar Profesor</h1>
+    
+    <!-- Mostrar error si existe -->
+    {% if error %}
+    <div class="alert alert-danger text-center" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <!-- Formulario de edición -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para activar al profesor si está inactivo -->
+    {% if not profe.status %}
+    <div class="text-center mt-4">
+        <form action="{% url 'activar_profe' profe.id %}" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Activar</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Botón de regresar -->
+    <div class="text-center mt-4">
+        {% if profe.status %}
+        <a href="{% url 'profesores_view_all' %}" class="btn btn-secondary">Regresar</a>
+        {% else %}
+        <a href="{% url 'profesores_eliminados' %}" class="btn btn-secondary">Regresar</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

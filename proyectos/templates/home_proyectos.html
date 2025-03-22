@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Subir Archivo{% endblock %}
+{% block content %}
+<!-- Contenedor Principal -->
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">
+        <i class="bi bi-folder2-open"></i> Proyectos
+    </h1>
+
+    <!-- Mensajes -->
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Tarjeta con Botones -->
+    <div class="card shadow-lg">
+        <div class="card-body text-center bg-dark text-white">
+            <p class="card-text mb-4">Selecciona una opción para gestionar los archivos de proyectos.</p>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'listar_archivos' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="bi bi-list"></i> Lista de Archivos
+                </a>
+                <a href="{% url 'subir_archivo' %}" class="btn btn-success btn-lg">
+                    <i class="bi bi-cloud-upload"></i> Subir Archivos
+                </a>
+            </div>
+
+            <!-- Botón Volver -->
+            <button class="btn btn-secondary btn-lg mt-4" onclick="history.back()">
+                <i class="bi bi-arrow-left-circle"></i> Volver
+            </button>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock %}

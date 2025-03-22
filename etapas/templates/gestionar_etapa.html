@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Gestionar Etapa{% endblock %}
+{% block content %}
+<h1>Editar Etapa de {{ grupo.trayecto_cursante }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="estatus">Estado de la Etapa:</label>
+    <select name="estatus" id="estatus">
+        <option value="Pendiente" {% if etapa.Estatus == "Pendiente" %}selected{% endif %}>Pendiente</option>
+        <option value="Aprobado" {% if etapa.Estatus == "Aprobado" %}selected{% endif %}>Aprobado</option>
+        <option value="Rechazado" {% if etapa.Estatus == "Rechazado" %}selected{% endif %}>Rechazado</option>
+    </select>
+    
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'home_etapas' %}" class="btn btn-secondary">Volver</a>
+</form>
+
+{% endblock %}

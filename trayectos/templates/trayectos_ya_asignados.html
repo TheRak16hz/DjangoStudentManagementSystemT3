@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Estudiantes Ya asignados a Trayectos</h1>
+
+    <main class="mb-4">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+            <div class="text-center">
+                <a href="{% url 'asignar_estudiantes' %}" class="btn btn-secondary mt-3">Volver</a>
+            </div>
+</div>
+            <br><br>
+            <h3>Lista de Estudiantes Ya Asignados</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>trayecto actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estudiante in estudiantes %}
+                        <tr>
+                            <td>{{ estudiante.ci_est }}</td>
+                            <td>{{ estudiante.name_est }}</td>
+                            <td>{{ estudiante.apellido_est }}</td>
+                            <td>{{ estudiante.trayecto_año }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        
+        </form>
+
+        
+    </main>
+
+    
+</div>
+{% endblock %}

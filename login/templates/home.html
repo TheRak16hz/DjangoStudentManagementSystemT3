@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% load static %}
+{% block content %}
+<style>
+    /* Fijar el tamaño de las tarjetas */
+.fixed-size-image {
+    width: 300px;       /* Ancho fijo */
+    height: 200px;      /* Alto fijo */
+    object-fit: cover;  /* Ajusta la imagen para llenar el espacio sin deformarse */
+}
+
+.fixed-size-card {
+    width: 300px;   /* El contenedor debe coincidir con el ancho */
+    height: 200px;  /* El contenedor debe coincidir con el alto */
+}
+
+/* Efecto hover para las tarjetas */
+.grow-hover {
+    transition: transform 0.3s ease-in-out;
+}
+
+.grow-hover:hover {
+    transform: scale(1.05); /* Agranda la tarjeta un 5% */
+}
+
+.grow-hover:hover img {
+    transform: scale(1.1); /* Agranda la imagen un 10% */
+}
+</style>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Bienvenido al sistema de proyectos de INFORMATICA de la UPTAIET</h1>
+    <div class="row text-center">
+        <!-- Botón Login Staff -->
+<div class="col-md-4">
+    <div class="card-body mb-2 d-flex">
+        <h5 class="card-title align-items-center">Sesión Administrativo</h5>
+    </div>
+    <div class="card shadow-sm grow-hover fixed-size-card">
+        <a style="text-decoration: none;" href="{% url 'login_staff' %}">
+            <img src="{% static 'images/log_stff.jpg' %}" class="card-img-top img-fluid fixed-size-image" alt="Login Staff">
+            
+        </a>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="card-body mb-2 d-flex">
+        <h5 class="card-title align-items-center">SAREC</h5>
+    </div>
+    <div class="card shadow-sm grow-hover fixed-size-card">
+        <a style="text-decoration: none;" href="https://uptaivirtualsarec.com/">
+            <img src="{% static 'images/logo_png_sarec.jpg' %}" class="card-img-top img-fluid fixed-size-image" alt="Login Staff">
+            
+        </a>
+    </div>
+</div>
+
+<!-- Botón Login Estudiante -->
+<div class="col-md-4">
+    <div class="card-body mb-2">
+        <h5 class="card-title d-flex">Sesión estudiante</h5>
+    </div>
+    <div class="card shadow-sm grow-hover fixed-size-card">
+        <a style="text-decoration: none;" href="{% url 'login' %}">
+            <img src="{% static 'images/log_est.jpg' %}" class="card-img-top img-fluid fixed-size-image" alt="Login Estudiante">
+        </a>
+    </div>
+</div>
+    </div>
+</div>
+<br><br><br><br><br>
+{% endblock %}

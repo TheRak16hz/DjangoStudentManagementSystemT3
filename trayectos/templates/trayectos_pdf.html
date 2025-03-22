@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container mt-5">
+    <!-- Título del formulario centrado -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-4 col-md-8 col-sm-10 header-formulario p-2 d-flex justify-content-center align-items-center">
+            <h3 class="text-center bg-titulo-formulario p-2 w-100 rounded">
+                PDF de Trayectos
+            </h3>
+        </div>
+    </div>
+
+    <!-- Opciones de Trayectos (2x2) -->
+    <div class="p-3" style="max-width: 400px; margin: 0 auto;">
+        <h5 class="text-center mb-3">PDF's</h5>
+        <div class="d-flex flex-wrap justify-content-center">
+            <a class="btn btn-lg btn-primary m-2" href="{% url 'generar_pdf_trayecto1' %}">PDF Trayecto 1</a>
+            <a class="btn btn-lg btn-primary m-2" href="{% url 'generar_pdf_trayecto2' %}">PDF Trayecto 2</a>
+            <a class="btn btn-lg btn-primary m-2" href="{% url 'generar_pdf_trayecto3' %}">PDF Trayecto 3</a>
+            <a class="btn btn-lg btn-primary m-2" href="{% url 'generar_pdf_trayecto4' %}">PDF Trayecto 4</a>
+        </div>
+    </div>
+
+    <div class="mt-4"></div>
+
+    <!-- Espaciado adicional -->
+    <div class="mt-4"></div>
+
+    <!-- Botón Volver centrado -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-4 text-center">
+            <a href="{% url 'trayectos_main' %}" class="btn btn-secondary btn-lg">
+                Volver
+            </a>
+        </div>
+    </div>
+    <br>
+</main>
+
+
+
+
+{% endblock %}

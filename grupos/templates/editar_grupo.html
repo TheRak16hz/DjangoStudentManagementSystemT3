@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Título del formulario -->
+            <h2 class="text-center mb-4">Editar Grupo: {{ grupo.trayecto_cursante }}</h2>
+            
+            <!-- Formulario para editar grupo -->
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                
+                <!-- Renderiza el formulario de Django -->
+                <div class="mb-3">
+                    {{ form.as_p }}
+                </div>
+                
+                <!-- Botón para guardar cambios -->
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success mx-2">Guardar Cambios</button>
+                    <a href="{% url 'grupos_list' %}" class="btn btn-secondary mx-2">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

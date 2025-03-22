@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container mt-5">
+    <!-- Título del formulario centrado -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10 header-formulario p-4 d-flex justify-content-center align-items-center">
+            <h3 class="text-center bg-titulo-formulario p-3 w-100 rounded">
+                Trayectos
+            </h3>
+        </div>
+    </div>
+
+    <!-- Opciones de Trayectos (2x2) -->
+    <div class="row mt-4 d-flex justify-content-center">
+        <div class="col-md-6">
+            <div class="row g-3">
+                <div class="col-6">
+                    <a href="{% url 'asignar_estudiantes_busqueda' %}" class="btn btn-primary btn-lg w-100">
+                        Buscar y Agregar Estudiantes
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'asignar_estudiantes' %}" class="btn btn-primary btn-lg w-100">
+                        Lista de Asignar Estudiantes
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'trayectos_view' %}" class="btn btn-primary btn-lg w-100">
+                        Ver Trayectos
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'buscar_estudiante_trayecto' %}" class="btn btn-primary btn-lg w-100">
+                        Buscar estudiante en Trayectos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4"></div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-4 text-center">
+            <a href="{% url 'trayectos_pdf' %}" class="btn btn-success btn-lg">
+                Generar PDF de Trayectos
+            </a>
+        </div>
+    </div>
+
+    <!-- Espaciado adicional -->
+    <div class="mt-4"></div>
+
+    <!-- Botón Volver centrado -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-4 text-center">
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary btn-lg">
+                Volver
+            </a>
+        </div>
+    </div>
+    <br>
+</main>
+{% endblock %}

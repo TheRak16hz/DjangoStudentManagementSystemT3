@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% load static %}
+<style>
+    .mi-tabla td:nth-child(1),
+    .mi-tabla td:nth-child(3),
+    .mi-tabla td:nth-child(5) {
+        background-color: rgb(192, 221, 255);
+        color: #2f86f8;
+        height: 50px;
+        width: 20%;
+    }
+
+    .mi-tabla td:nth-child(2),
+    .mi-tabla td:nth-child(4) {
+        width: 30%;
+    }
+
+    .header-formulario-user {
+        background-color: #2f86f8;
+        color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 5px 10px rgb(187, 206, 207);
+        padding: 15px;
+        text-align: center;
+    }
+
+    .table td, .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-formulario {
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .mi-tabla td:nth-child(1),
+        .mi-tabla td:nth-child(3),
+        .mi-tabla td:nth-child(5) {
+            font-size: 12px;
+        }
+
+        .mi-tabla td:nth-child(2),
+        .mi-tabla td:nth-child(4) {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row mt-4 d-flex justify-content-center">
+        <div class="col-lg-10 header-formulario-user d-flex flex-wrap align-items-center justify-content-between">
+            <h5 class="text-uppercase m-0">Datos personales del estudiante</h5>
+            <img class="img-fluid" src="{% static 'images/user_image.png' %}" alt="Usuario" width="64">
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3 justify-content-center py-4">
+    <div class="col-lg-10">
+        <div class="row justify-content-center">
+            {% if estudiante %}
+            <div class="table-responsive py-2">
+                <table class="table table-sm table-bordered my-4 mi-tabla">
+                    <tbody>
+                        <tr>
+                            <td class="text-uppercase">Nombre</td>
+                            <td>{{ estudiante.nombre }}</td>
+                            <td class="text-uppercase">Apellido</td>
+                            <td>{{ estudiante.apellido }}</td>
+                            
+                        </tr>
+                        <tr>
+                            <td class="text-uppercase">Cédula</td>
+                            <td>{{ estudiante.cedula }}</td>
+                            <td class="text-uppercase">Correo</td>
+                            <td>{{ estudiante.email }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-uppercase">Sección</td>
+                            <td>{{ estudiante.seccion }}</td>
+                            <td class="text-uppercase">Fecha de nacimiento</td>
+                            <td>{{ estudiante.fecha_nacimiento }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-uppercase">N° de Teléfono</td>
+                            <td>{{ estudiante.numero_telefono }}</td>
+                            <td class="text-uppercase">Dirección</td>
+                            <td>{{ estudiante.direccion }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-uppercase">Sexo</td>
+                            <td>{{ estudiante.sexo }}</td>
+                            <td class="text-uppercase">Estatus</td>
+                            <td>{{ estudiante.status|yesno:"Activo,Inactivo" }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <div class="row mb-0 g-3">
+                                    <div class="col-12 col-md-12 px-5">
+                                        <a class="btn btn-primary btn-formulario" href="{% url 'home_pp' %}">
+                                            Subir Proyecto
+                                        </a>
+                                    </div>
+                                    <!-- <div class="col-12 col-md-6" hidden="">
+                                        <a class="btn btn-primary btn-formulario" href="{% url 'home_etapas' %}">
+                                            Ver Etapas
+                                        </a>
+                                    </div> -->
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center">No hay información del estudiante disponible.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

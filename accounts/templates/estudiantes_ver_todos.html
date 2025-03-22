@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<main class="container-fluid mt-4">
+    <!-- Cabecera similar -->
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-10 p-4 header-formulario d-flex justify-content-between align-items-center">
+            <div class="col-lg-6 p-3">
+                <h1 class="text-center">Lista de Estudiantes</h1>
+            </div>
+            <div class="col-lg-5 d-flex justify-content-center">
+                <img src="{% static 'images/user_image.png' %}" class="img-fluid w-25" alt="Logo">
+            </div>
+        </div>
+    </div>
+    <br>
+
+    
+
+    
+    <br>
+    <!-- Estudiantes eliminados -->
+    {% if estudiantes_eliminados %}
+    <div class="row mb-3 justify-content-center">
+        <div class="col-lg-10 text-center">
+            <a class="btn btn-secondary btn-formulario col-sm-12 col-md-8 col-lg-4" href="{% url 'estudiantes_eliminados' %}">
+                Ir a Estudiantes Eliminados
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Botón de Volver -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10 text-center">
+            <a href="{% url 'estudiantes_main' %}" class="btn btn-primary mt-3">Volver</a>
+        </div>
+    </div>
+
+    </div>
+    <br>
+
+    <!-- Lista de estudiantes activos -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm table-bordered my-4">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Nombre</th>
+                            <th class="text-center">Cédula</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estudiante in estudiantes %}
+                        {% if estudiante.status == True %}
+                        <tr>
+                            <td class="text-center">{{ estudiante.nombre }}</td>
+                            <td class="text-center">{{ estudiante.cedula }}</td>
+                            <td class="text-center"><span class="badge bg-success">Activo 🟩</span></td>
+                            <td class="text-center">
+                                <a class="btn btn-primary btn-sm" href="{% url 'editar_estudiante' estudiante.id %}">Editar</a>
+                                
+                                {% if roles != "secretaria" %}
+                                <a class="btn btn-danger btn-sm" href="{% url 'eliminar_estudiante' estudiante.id %}">Borrar</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Mensajes -->
+    <!-- <div class="row justify-content-center">
+        <div class="col-lg-10 text-center">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    </div> -->
+</main>
+{% endblock %}

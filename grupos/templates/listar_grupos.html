@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="text-center mb-4 text-primary">Lista de Grupos</h1>
+
+            <!-- Tabla estilizada -->
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th scope="col">Trayecto</th>
+                            <th scope="col">Docente Metodológico</th>
+                            <th scope="col">Docente Académico</th>
+                            <th scope="col">Estudiantes</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grupo in grupos %}
+                        <tr>
+                            <td>{{ grupo.trayecto_cursante }}</td>
+                            <td>{{ grupo.docente_metodologico }}</td>
+                            <td>{{ grupo.docente_academico }}</td>
+                            <td>
+                                <ul class="list-unstyled mb-0 text-start">
+                                    {% for estudiante in grupo.estudiantes_lista %}
+                                    <li class="text-secondary small">
+                                        {{ estudiante.nombre }} {{ estudiante.apellido }} - <span class="fw-bold">{{ estudiante.cedula }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <!-- Botón de editar -->
+                                    <a class="btn btn-primary btn-sm me-2" href="{% url 'editar_grupo' grupo.id %}">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+
+                                    {% if roles == "admin" %}
+                                    <!-- Botón de eliminar -->
+                                    <form action="{% url 'eliminar_grupo' grupo.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este grupo?');">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-muted">No hay grupos registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Enlaces adicionales -->
+            <div class="d-flex justify-content-between mt-4 flex-wrap">
+                <a class="btn btn-secondary mb-2" href="{% url 'registrar_grupo' %}">
+                    <i class="bi bi-plus-circle"></i> Registro de grupos
+                </a>
+                <a class="btn btn-info text-white mb-2" href="{% url 'buscar_estudiante_por_cedula' %}">
+                    <i class="bi bi-search"></i> Buscar estudiante por cédula
+                </a>
+                <a class="btn btn-dark mb-2" href="{% url 'generar_pdf_grupos' %}">
+                    <i class="bi bi-file-earmark-pdf"></i> Generar PDF de los grupos
+                </a>
+            </div>
+
+            <!-- Botón de volver -->
+            <div class="text-center mt-4">
+                <a class="btn btn-outline-primary" href="{% url 'staff_dashboard' %}">
+                    <i class="bi bi-arrow-left-circle"></i> Volver
+                </a>
+            </div>
+            <br>    
+        </div>
+    </div>
+</div>
+{% endblock %}

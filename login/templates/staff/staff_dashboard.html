@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow p-4">
+                <div class="row mt-4 d-flex justify-content-center">
+                    <div class="col-lg-6 col-sm-6 col-md-6 header-formulario p-4 d-flex justify-content-center">
+                        <h3 class=" text-center mt-2 mx-4 p-2 bg-titulo-formulario">Staff Dashboard</h3>
+                    </div>
+                </div>
+
+                {% if request.session.staff_id %}
+                
+                <div class="list-group mb-4">
+                    <a href="{% url 'profesores' %}" class="list-group-item list-group-item-action">
+                        Profesores
+                    </a>
+                    <a href="{% url 'estudiantes_main' %}" class="list-group-item list-group-item-action">
+                        Estudiantes
+                    </a>
+                    <a href="{% url 'trayectos_main' %}" class="list-group-item list-group-item-action">
+                        Trayectos
+                    </a>
+                    <a href="{% url 'grupos_list' %}" class="list-group-item list-group-item-action">
+                        Grupos
+                    </a>
+                    <a href="{% url 'listar_archivos_all' %}" class="list-group-item list-group-item-action">
+                        Proyectos
+                    </a>
+                    <a href="{% url 'home_etapas' %}" class="list-group-item list-group-item-action">
+                        Etapas
+                    </a>
+                </div>
+
+                <div class="alert alert-info text-center">
+                    <p><strong>Hola, {{ request.session.staff_name }}!</strong></p>
+                    <p><strong>Cédula:</strong> {{ request.session.staff_cedula }}</p>
+                    <p><strong>Correo:</strong> {{ request.session.staff_correo }}</p>
+                    <p><strong>Usuario:</strong> {{ request.session.staff_user }}</p>
+                    <p><strong>Rol:</strong> {{ request.session.staff_role }}</p>
+                    <p><strong>Estado:</strong> {{ request.session.staff_status|yesno:"Activo,Inactivo" }}</p>
+                </div>
+
+                {% else %}
+                <div class="alert alert-danger text-center">
+                    <p>You are not authorized to view this page.</p>
+                    <a href="{% url 'login_staff' %}" class="btn btn-primary">Login as Staff</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

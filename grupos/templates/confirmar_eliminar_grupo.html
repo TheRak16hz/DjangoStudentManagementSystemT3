@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>¿Estás seguro que deseas eliminar el grupo "{{ grupo.trayecto_cursante }}"?</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Eliminar</button>
+    <a href="{% url 'nombre_de_lista_grupos' %}">Cancelar</a>
+  </form>
+{% endblock %}

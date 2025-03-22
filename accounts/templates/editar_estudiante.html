@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center">Editar Estudiante</h1>
+    <!-- Mostrar error si existe -->
+    {% if error %}
+    <div class="alert alert-danger text-center" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Formulario -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="btn btn-formulario btn-primary w-100">Actualizar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de activar/desactivar estudiante -->
+    <div class="text-center mt-4">
+        <div class="btn">
+            {% if not estudiante.status %}
+            <!-- Formulario para activar al estudiante -->
+            <form action="{% url 'activar_estudiante' estudiante.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Activar</button>
+            </form>
+            {% endif %}
+            <br>
+            <!-- Botón de regresar -->
+            {% if estudiante.status %}
+            <a href="{% url 'estudiantes_ver_todos' %}" class="btn btn-secondary">Regresar</a>
+            {% else %}
+            <a href="{% url 'estudiantes_eliminados' %}" class="btn btn-secondary">Regresar</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

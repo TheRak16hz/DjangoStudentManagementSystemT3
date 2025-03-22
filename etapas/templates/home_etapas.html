@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Gestionar Etapa{% endblock %}
+{% block content %}
+{% load custom_filters_etapa %}
+
+<h1>Etapas Épicas</h1>
+
+<ul>
+    <li><a href="{% url 'gestionar_etapa' '1' %}">Gestión de Etapas</a></li>
+</ul>
+
+<h2>Lista de Grupos</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Trayecto</th>
+            <th>Docente Metodológico</th>
+            <th>Docente Académico</th>
+            <th>Estudiantes</th>
+            <th>Estado de Etapa</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for grupo in grupos %}
+        <tr>
+            <td>{{ grupo.trayecto_cursante }}</td>
+            <td>{{ grupo.docente_metodologico }}</td>
+            <td>{{ grupo.docente_academico }}</td>
+            <td>{{ grupo.get_estudiantes|join:', ' }}</td>
+            <td>
+                {% if grupos.id|stringformat:"s" in etapas %}
+                {{ etapas|dict_get:grupos.id|stringformat:"s"|attr:"Estatus" }}
+                {% else %}
+                    No asignado
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'gestionar_etapa' grupo.id %}" class="btn btn-primary">
+                    {% if etapas|get_item:grupos.id %}
+                        Editar Etapa
+                    {% else %}
+                        Asignar Etapa
+                    {% endif %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

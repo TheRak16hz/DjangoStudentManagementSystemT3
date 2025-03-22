@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Editar Datos de: " {{ estudiante.name_est }} {{ estudiante.apellido_est }} "</h1>
+
+    <main>
+        <form method="POST" class="mb-4">
+            {% csrf_token %}
+
+            <!-- Campo para la sección -->
+            <div class="form-group mb-4">
+                <h3>Seleccionar Sección</h3>
+                <p>Sección actual: <strong>{{ estudiante.seccion }}</strong></p>
+                <label for="seccion">Elige una opción</label>
+                <select name="seccion" class="form-control">
+                    <option value="">-----</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+
+            <!-- Selección de trayecto -->
+            <div class="form-group">
+                <h3>Seleccionar Trayecto</h3>
+                <p>Trayecto actual: <strong>Trayecto {{ trayecto }}</strong></p>
+                <label for="trayecto">Elige una opción:</label>
+                <select id="trayecto" name="trayecto" class="form-control">
+                    <option value="">------</option>
+                    <option value="1">Trayecto 1</option>
+                    <option value="2">Trayecto 2</option>
+                    <option value="3">Trayecto 3</option>
+                    <option value="4">Trayecto 4</option>
+                </select>
+            </div>
+
+            <!-- Botón de actualización -->
+            <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+        </form>
+
+        <!-- Botón para volver -->
+        <a href="{% url 'trayectos_view' %}" class="btn btn-secondary">Volver</a>
+        <br><br>
+    </main>
+</div>
+{% endblock %}

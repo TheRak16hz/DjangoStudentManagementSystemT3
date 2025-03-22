@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Lista de Estudiantes por Trayecto</h1>
+
+    <!-- Tabla de Trayecto 1 -->
+    <h2>Trayecto 1</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Sección</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in trayecto1_data %}
+                <tr>
+                    <td>{{ entry.ref_cedula.cedula }}</td>
+                    <td>{{ entry.ref_cedula.nombre }}</td>
+                    <td>{{ entry.seccion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Tabla de Trayecto 2 -->
+    <h2>Trayecto 2</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Sección</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in trayecto2_data %}
+                <tr>
+                    <td>{{ entry.ref_cedula.cedula }}</td>
+                    <td>{{ entry.ref_cedula.nombre }}</td>
+                    <td>{{ entry.seccion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Tabla de Trayecto 3 -->
+    <h2>Trayecto 3</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Sección</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in trayecto3_data %}
+                <tr>
+                    <td>{{ entry.ref_cedula.cedula }}</td>
+                    <td>{{ entry.ref_cedula.nombre }}</td>
+                    <td>{{ entry.seccion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Tabla de Trayecto 4 -->
+    <h2>Trayecto 4</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Sección</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in trayecto4_data %}
+                <tr>
+                    <td>{{ entry.ref_cedula.cedula }}</td>
+                    <td>{{ entry.ref_cedula.nombre }}</td>
+                    <td>{{ entry.seccion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
