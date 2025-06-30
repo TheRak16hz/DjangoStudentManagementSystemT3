@@ -23,7 +23,7 @@
                         <td><a href="{{ archivo.Capitulos.url }}" class="text-decoration-none text-success">Descargar Capítulos</a></td>
                         <td>{{ archivo.Grupo_est_id }}</td>
                         <td>
-                            {% if user_id in grupo.get_estudiantes %}
+                            {% if estudiante_id in grupo.get_estudiantes %}
                                 {% if archivo.Grupo_est_id == grupo.id %}
                                     <a href="{% url 'actualizar_archivo' archivo.id %}" class="btn btn-warning btn-sm">Actualizar</a>
                                     {% if roles != "secretaria" %}

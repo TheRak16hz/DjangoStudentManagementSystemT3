@@ -6,83 +6,91 @@
         <div class="col-lg-8">
             <h1 class="text-center text-primary mb-4">Registrar Grupo</h1>
 
-            <!-- Enlace para volver a la lista de grupos -->
-            <div class="d-flex justify-content-end mb-3">
-                <a href="{% url 'grupos_list' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left-circle"></i> Volver a la lista de grupos
-                </a>
+            <div class="row justify-content-center mt-3">
+                <div class="col-md-auto">
+                    <a href="{% url 'grupos_main' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left-circle"></i> Volver
+                    </a>
+                    <a href="{% url 'grupos_ya_registrados' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-arrow-left-circle"></i> Ver ya registrados
+                    </a>
+                </div>
             </div>
-            <!-- Botón para registrar -->
-            
-            <!-- Formulario de registro de grupo -->
+            <br>
             <div class="card shadow-sm p-4">
                 <form method="POST">
                     {% csrf_token %}
-                    
+
                     <div class="text-center">
                         <button type="submit" id="submit-btn" class="btn btn-success">
-                             Registrar Grupo
+                            Registrar Grupo
                         </button>
                     </div>
-                    <!-- Renderiza el formulario de Django -->
                     <div class="mb-4">
                         {{ form.as_p }}
                     </div>
-                    
-                    <!-- Sección de selección de estudiantes -->
+
                     <div id="estudiantes-list" class="mb-4">
                         <h5 class="text-primary mb-3">Selecciona un máximo de 4 estudiantes:</h5>
+                        <style>
+                            .larger-checkbox {
+                                transform: scale(1.3); /* Aumenta el tamaño */
+                                margin-right: 0.5em;
+                                vertical-align: middle;
+                                border: 1px solid #333; /* Borde negro */
+                            }
+                            .larger-checkbox:checked {
+                                border-color: #0d6efd; /* Color primario al estar marcado */
+                            }
+                        </style>
                         {% for estudiante in estudiantes %}
                         <div class="form-check mb-2">
-                            <input 
-                                type="checkbox" 
-                                class="form-check-input estudiante-checkbox" 
-                                id="estudiante_{{ estudiante.id }}" 
-                                name="estudiantes" 
-                                value="{{ estudiante.id }}" 
-                                {% if estudiante.id|stringformat:"s" in ids_estudiantes_grupos %}disabled{% endif %}>
-                            <label class="form-check-label" for="estudiante_{{ estudiante.id }}">
-                                <strong>{{ estudiante.cedula }}</strong> - {{ estudiante.nombre }}
-                                {% if estudiante.id|stringformat:"s" in ids_estudiantes_grupos %}
+                            <input
+                                type="checkbox"
+                                class="form-check-input estudiante-checkbox larger-checkbox"
+                                id="estudiante_{{ estudiante.ref_cedula_id }}"
+                                name="estudiantes"
+                                value="{{ estudiante.ref_cedula_id }}"
+                                {% if estudiante.ref_cedula_id|stringformat:"s" in ids_estudiantes_grupos %}disabled{% endif %}>
+                            <label class="form-check-label" for="estudiante_{{ estudiante.ref_cedula_id }}">
+                                <strong>{{ estudiante.ci_est }}</strong> - {{ estudiante.name_est }}
+                                {% if estudiante.ref_cedula_id|stringformat:"s" in ids_estudiantes_grupos %}
                                     <span class="badge bg-danger ms-2">Asignado</span>
                                 {% endif %}
                             </label>
                         </div>
                         {% endfor %}
                     </div>
-                    
-                    
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Script para controlar la selección de estudiantes -->
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('.estudiante-checkbox');
-        const submitButton = document.getElementById('submit-btn');
 
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                const selected = document.querySelectorAll('.estudiante-checkbox:checked');
-                
-                if (selected.length >= 4) {
-                    checkboxes.forEach(function(cb) {
-                        if (!cb.checked) {
-                            cb.disabled = true;
-                        }
-                    });
-                } else {
-                    checkboxes.forEach(function(cb) {
-                        if (!cb.disabled) {
-                            cb.disabled = false;
-                        }
-                    });
+        function updateCheckboxStates() {
+            const selectedCount = document.querySelectorAll('.estudiante-checkbox:checked').length;
+
+            checkboxes.forEach(function(checkbox) {
+                if (selectedCount >= 4 && !checkbox.checked) {
+                    checkbox.disabled = true;
+                } else if (selectedCount < 4 && checkbox.disabled && !checkbox.dataset.wasInitiallyDisabled) {
+                    checkbox.disabled = false;
+                } else if (selectedCount < 4 && checkbox.disabled && checkbox.dataset.wasInitiallyDisabled === 'false') {
+                    checkbox.disabled = false;
                 }
             });
+        }
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.dataset.wasInitiallyDisabled = checkbox.disabled;
+            checkbox.addEventListener('change', updateCheckboxStates);
         });
+
+        updateCheckboxStates();
     });
 </script>
 {% endblock %}

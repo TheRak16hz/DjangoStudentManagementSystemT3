@@ -37,7 +37,7 @@ def profesores_search(request):
                 except Exception as e:
                 # Manejar cualquier otra excepción que pueda ocurrir
                     messages.error(request, f'Ocurrió un error: No se encontró un estudiante con esa cédula.')
-        return render(request, 'buscar_profe.html', {'form': form, 'profesor': profesor})
+        return render(request, 'buscar_profe.html', {'form': form, 'profesor': profesor,  "roles":request.session["staff_role"]})
 
 def crear_profe(request):
     if request.method == "GET":

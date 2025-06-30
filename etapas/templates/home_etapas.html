@@ -1,51 +1,101 @@
 {% extends 'base.html' %}
-{% block title %}Gestionar Etapa{% endblock %}
 {% block content %}
 {% load custom_filters_etapa %}
 
-<h1>Etapas Épicas</h1>
+<div class="container py-4">
+    <h2 class="mb-4 text-primary">Gestión de Etapas</h2>
 
-<ul>
-    <li><a href="{% url 'gestionar_etapa' '1' %}">Gestión de Etapas</a></li>
-</ul>
+    <a href="{% url 'etapas_main' %}" class="btn btn-primary "><i class="bi bi-plus-circle"></i> volver
+    </a><br><br>
 
-<h2>Lista de Grupos</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Trayecto</th>
-            <th>Docente Metodológico</th>
-            <th>Docente Académico</th>
-            <th>Estudiantes</th>
-            <th>Estado de Etapa</th>
-            <th>Acción</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for grupo in grupos %}
-        <tr>
-            <td>{{ grupo.trayecto_cursante }}</td>
-            <td>{{ grupo.docente_metodologico }}</td>
-            <td>{{ grupo.docente_academico }}</td>
-            <td>{{ grupo.get_estudiantes|join:', ' }}</td>
-            <td>
-                {% if grupos.id|stringformat:"s" in etapas %}
-                {{ etapas|dict_get:grupos.id|stringformat:"s"|attr:"Estatus" }}
-                {% else %}
-                    No asignado
-                {% endif %}
-            </td>
-            <td>
-                <a href="{% url 'gestionar_etapa' grupo.id %}" class="btn btn-primary">
-                    {% if etapas|get_item:grupos.id %}
-                        Editar Etapa
-                    {% else %}
-                        Asignar Etapa
-                    {% endif %}
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Trayecto</th>
+                    <th>Docente Metodológico</th>
+                    <th>Docente Académico</th>
+                    <th>Estudiantes</th>
+                    <th>Etapas</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grupo in grupos %}
+                {% with etapa=etapas_dict|get_item:grupo.id %}
+                    <tr>
+                        <td class="text-center">{{ grupo.trayecto_cursante }}</td>
+                        <td>{{ grupo.docente_metodologico }}</td>
+                        <td>{{ grupo.docente_academico }}</td>
+                        <td>
+                            <ul class="list-unstyled mb-0 text-start">
+                                {% for estudiante in grupo.estudiantes_lista %}
+                                    <li class="small">
+                                        <i class="bi bi-person-fill"></i> {{ estudiante.nombre }} {{ estudiante.apellido }} - 
+                                        <span class="fw-bold">{{ estudiante.cedula }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            {% if etapa %}
+                                <p><strong>Etapa Actual:</strong> {{ etapa.etapa_actual }}</p>
+
+                                <p><strong>Etapa 1:</strong>
+                                    <span class="badge 
+                                        {% if etapa.etapa1 == 'Reprobado' %}bg-danger
+                                        {% elif etapa.etapa1 == 'Aprobado' %}bg-success
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ etapa.etapa1 }}
+                                    </span>
+                                </p>
+
+                                <p><strong>Etapa 2:</strong>
+                                    {% if etapa.etapa2 == 'Aprobado' %}
+                                        <span class="badge bg-success">Proyecto aprobado</span>
+                                    {% elif etapa.etapa2 == 'Reprobado' %}
+                                        <span class="badge bg-danger">{{ etapa.etapa2 }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ etapa.etapa2 }}</span>
+                                    {% endif %}
+                                </p>
+
+                                <p><strong>Etapa 3:</strong>
+                                    {% if etapa.etapa3 == 'Aprobado' %}
+                                        <span class="badge bg-success">Proyecto aprobado</span>
+                                    {% elif etapa.etapa3 == 'Reprobado' %}
+                                        <span class="badge bg-warning text-dark">Caso de etapa 4</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ etapa.etapa3 }}</span>
+                                    {% endif %}
+                                </p>
+                            {% else %}
+                                <em class="text-muted">No asignadas</em>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if etapa %}
+                                <a href="{% url 'gestionar_etapa' grupo.id %}" class="btn btn-outline-primary btn-sm mb-1">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a><br>
+                                <a href="{% url 'eliminar_etapa' grupo.id %}" 
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('¿Estás seguro de que deseas eliminar las etapas de este grupo?');">
+                                   <i class="bi bi-trash"></i> Eliminar
+                                </a>
+                            {% else %}
+                                <a href="{% url 'asignar_etapa' grupo.id %}" 
+                                   class="btn btn-outline-success btn-sm">
+                                   <i class="bi bi-plus-circle"></i> Asignar Etapas
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+</div>
 {% endblock %}

@@ -6,6 +6,8 @@ from accounts.models import CustomUser
 from accounts.forms import CustomUserCreationForm
 import logging
 from accounts.models import Estudiante
+from grupos.models import Grupos
+from etapas.models import EtapasEstudiantes
 from .forms import StaffForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -24,10 +26,49 @@ def home(request):
     return render(request, 'home.html')
 
 def dashboard(request):
-    print(request.session['user_cedula'])
+    #print(request.session['user_cedula'])
     estudiante = Estudiante.objects.filter(cedula=request.session['user_cedula']).first()  # Filtrar por cédula del usuario logueado
-    print(estudiante)
-    return render(request, 'users/users_dashboard.html', {'estudiante': estudiante})
+
+
+
+
+    #####metodo para saber que etapa esta y de que grupo
+    estudiante_encontrado = None
+    grupo_data = None
+
+    try:
+        estudiante_encontrado = Estudiante.objects.get(cedula=request.session['user_cedula'])
+        estudiante_id = estudiante_encontrado.id
+
+        grupos = Grupos.objects.all()
+        for grupo in grupos:
+            estudiantes_ids = [est_id.strip() for est_id in grupo.get_estudiantes() if est_id.strip()]
+            estudiantes_ids = [int(est_id) for est_id in estudiantes_ids if est_id.isdigit()]
+
+            if estudiante_id in estudiantes_ids:
+                estudiantes = Estudiante.objects.filter(id__in=estudiantes_ids)
+
+                # Obtener etapas del grupo
+                etapas_dict = {etapa.grupo_id: etapa for etapa in EtapasEstudiantes.objects.all()}
+
+                etapa = EtapasEstudiantes.objects.filter(grupo_id=grupo.id).first()
+
+                grupo_data = {
+                    'id': grupo.id,
+                    'trayecto_cursante': grupo.trayecto_cursante,
+                    'estudiantes_lista': estudiantes,
+                    'etapa': etapa,
+                }
+                break
+    except Estudiante.DoesNotExist:
+        estudiante_encontrado = None
+
+
+    return render(request, 'users/users_dashboard.html', {
+        'estudiante': estudiante,
+        'estudiante_encontrado': estudiante_encontrado,
+        'grupo_encontrado': grupo_data,
+        })
 
 
 logger = logging.getLogger(__name__)

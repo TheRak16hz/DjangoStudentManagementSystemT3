@@ -58,6 +58,71 @@
     </div>
 </div>
 
+{% if grupo_encontrado.etapa %}
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="p-3 text-white rounded text-center" style="background-color: #2f86f8; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h6 class="mb-0">
+
+                    <strong>Etapa Actual:</strong> {{ grupo_encontrado.etapa.etapa_actual }}
+                    —
+                    <strong>Estado:</strong>
+                    {% if grupo_encontrado.etapa.etapa_actual == 1 %}
+                        {% with grupo_encontrado.etapa.etapa1 as estado %}
+                            <span class="badge
+                                {% if estado == 'Reprobado' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ estado }}
+                            </span>
+                        {% endwith %}
+                    {% elif grupo_encontrado.etapa.etapa_actual == 2 %}
+                        {% with grupo_encontrado.etapa.etapa2 as estado %}
+
+                            <span class="badge
+                                {% if estado == 'Aprobado' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ estado }}
+                            </span><br><br>
+
+                            {% if grupo_encontrado.etapa.etapa1 == "Aprobado" and grupo_encontrado.etapa.etapa2 != "Aprobado" %}
+                            <div>Etapa anterior: 1 - <span class="badge" style="background: white; color: green">Aprobado</span></div>
+                            {% endif %}
+                            {% if estado == 'Aprobado' %}
+                                <div class="mt-2 alert alert-success py-1 mb-0">Proyecto aprobado</div>
+                            {% endif %}
+                        {% endwith %}
+                    {% elif grupo_encontrado.etapa.etapa_actual == 3 %}
+                        {% with grupo_encontrado.etapa.etapa3 as estado %}
+                            <span class="badge
+                                {% if estado == 'Aprobado' %}bg-success
+                                {% elif estado == 'Reprobado' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ estado }}
+                            </span><br><br>
+                            
+                            
+                            {% if grupo_encontrado.etapa.etapa2 == "Reprobado" and grupo_encontrado.etapa.etapa3 == "Pendiente" %}
+                            <div>Etapa anterior: 2 - <span class="badge" style="background: white; color: red">Reprobado</span></div>
+                            {% endif %}
+
+                            {% if estado == 'Aprobado' %}
+                                <div class="mt-2 alert alert-success py-1 mb-0">Proyecto aprobado</div>
+                            {% elif estado == 'Reprobado' %}
+                                <div class="mt-2 alert alert-warning text-dark py-1 mb-0">Caso de etapa 4</div>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+
 <div class="row mb-3 justify-content-center py-4">
     <div class="col-lg-10">
         <div class="row justify-content-center">
@@ -98,18 +163,17 @@
                         </tr>
                         <tr>
                             <td colspan="5">
-                                <div class="row mb-0 g-3">
-                                    <div class="col-12 col-md-12 px-5">
-                                        <a class="btn btn-primary btn-formulario" href="{% url 'home_pp' %}">
-                                            Subir Proyecto
-                                        </a>
+                                {% if grupo_encontrado.etapa %}
+                                    {% if grupo_encontrado.etapa.etapa2 == 'Aprobado' or grupo_encontrado.etapa.etapa3 == 'Aprobado' %}
+                                    <div class="row mb-0 justify-content-center">
+                                        <div class="col-auto">
+                                            <a class="btn btn-sm btn-primary" href="{% url 'home_pp' %}">
+                                                Subir Proyecto
+                                            </a>
+                                        </div>
                                     </div>
-                                    <!-- <div class="col-12 col-md-6" hidden="">
-                                        <a class="btn btn-primary btn-formulario" href="{% url 'home_etapas' %}">
-                                            Ver Etapas
-                                        </a>
-                                    </div> -->
-                                </div>
+                                    {% endif %}
+                                {% endif %} 
                             </td>
                         </tr>
                     </tbody>

@@ -1,20 +1,64 @@
 {% extends 'base.html' %}
-{% block title %}Gestionar Etapa{% endblock %}
+{% load static %}
 {% block content %}
-<h1>Editar Etapa de {{ grupo.trayecto_cursante }}</h1>
+<div class="container mt-5">
+    <div class="card shadow rounded">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Editar Etapas del Grupo</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="mb-4">
+                <strong>Trayecto:</strong> {{ grupo.trayecto_cursante }}
+            </h5>
 
-<form method="POST">
-    {% csrf_token %}
-    <label for="estatus">Estado de la Etapa:</label>
-    <select name="estatus" id="estatus">
-        <option value="Pendiente" {% if etapa.Estatus == "Pendiente" %}selected{% endif %}>Pendiente</option>
-        <option value="Aprobado" {% if etapa.Estatus == "Aprobado" %}selected{% endif %}>Aprobado</option>
-        <option value="Rechazado" {% if etapa.Estatus == "Rechazado" %}selected{% endif %}>Rechazado</option>
-    </select>
-    
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Etapa Actual -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">{{ form.etapa_actual.label_tag }}</label>
+                    {{ form.etapa_actual }}
+                    {% if form.etapa_actual.errors %}
+                        <div class="text-danger small">{{ form.etapa_actual.errors|striptags }}</div>
+                    {% endif %}
+                </div>
 
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <a href="{% url 'home_etapas' %}" class="btn btn-secondary">Volver</a>
-</form>
+                <!-- Etapa 1, 2 y 3 en la misma fila -->
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">{{ form.etapa1.label_tag }}</label>
+                        {{ form.etapa1 }}
+                        {% if form.etapa1.errors %}
+                            <div class="text-danger small">{{ form.etapa1.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">{{ form.etapa2.label_tag }}</label>
+                        {{ form.etapa2 }}
+                        {% if form.etapa2.errors %}
+                            <div class="text-danger small">{{ form.etapa2.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">{{ form.etapa3.label_tag }}</label>
+                        {{ form.etapa3 }}
+                        {% if form.etapa3.errors %}
+                            <div class="text-danger small">{{ form.etapa3.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
 
+                <!-- Botones -->
+                <div class="d-flex justify-content-start mt-4">
+                    <a href="{% url 'home_etapas' %}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

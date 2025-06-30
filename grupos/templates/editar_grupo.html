@@ -3,25 +3,70 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            <!-- Título del formulario -->
-            <h2 class="text-center mb-4">Editar Grupo: {{ grupo.trayecto_cursante }}</h2>
-            
-            <!-- Formulario para editar grupo -->
+        <div class="col-lg-10 col-md-12">
+            <h2 class="text-center mb-4">Editar Grupo</h2>
+
+            <!-- Formulario de edición -->
             <form method="post" class="mb-4">
                 {% csrf_token %}
-                
-                <!-- Renderiza el formulario de Django -->
                 <div class="mb-3">
                     {{ form.as_p }}
                 </div>
-                
-                <!-- Botón para guardar cambios -->
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mb-4">
                     <button type="submit" class="btn btn-success mx-2">Guardar Cambios</button>
                     <a href="{% url 'grupos_list' %}" class="btn btn-secondary mx-2">Cancelar</a>
                 </div>
             </form>
+
+            <!-- Tabla de estudiantes actuales -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Estudiantes en el grupo
+                </div>
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cédula</th>
+                            <!--<th>Acción</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estudiante in estudiantes %}
+                            {% if estudiante.id|stringformat:"s" in estudiantes_seleccionados %}
+                                <tr>
+                                    <td>{{ estudiante.nombre }}</td>
+                                    <td>{{ estudiante.apellido }}</td>
+                                    <td><strong>{{ estudiante.cedula }}</strong></td>
+                                    <td>
+                                        
+                                        <form method="post" action="{% url 'eliminar_estudiante_grupo' form.instance.id estudiante.id %}">
+                                            {% csrf_token %}
+                                            {% if roles != "secretaria" %}
+                                            <button class="btn btn-sm btn-danger" onclick="return confirm('¿Deseas eliminar este estudiante del grupo?')">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                            {% endif %}
+                                        </form>
+                                        
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botón para agregar estudiantes -->
+            <div class="text-center mt-4">
+                {% if estudiantes_seleccionados|length < 4 %}
+                    <a href="{% url 'agregar_estudiantes_grupo' form.instance.id %}" class="btn btn-outline-primary">
+                        <i class="bi bi-person-plus"></i> Añadir Estudiantes
+                    </a>
+                {% endif %}
+            </div>
+            <br>
         </div>
     </div>
 </div>

@@ -1,12 +1,14 @@
 from django.db import models
 
-# Create your models here.
-
 class EtapasEstudiantes(models.Model):
-    Fecha = models.DateField()
-    Estatus = models.CharField(max_length=16)
-    Grupo_est_id = models.CharField(max_length=50)  # Simulación de ForeignKey como CharField
-    etapa = models.CharField(max_length=6, default="1")
+    grupo_id = models.CharField(max_length=50, unique=True)  # Simula ForeignKey
+    etapa_actual = models.IntegerField(default=1)  # Controlador de etapa activa
+
+    etapa1 = models.CharField(max_length=16, default="Pendiente")  # ("Pendiente", "Aprobado", "Reprobado")
+    etapa2 = models.CharField(max_length=16, default="N/A")
+    etapa3 = models.CharField(max_length=16, default="N/A")
+
+    fecha_actualizacion = models.DateField(auto_now=True)
 
     def __str__(self):
-        return f"{self.Estatus} - {self.Grupo_est_id}"
+        return f"Grupo {self.grupo_id} - Etapa {self.etapa_actual} - {self.etapa1}, {self.etapa2}, {self.etapa3}"

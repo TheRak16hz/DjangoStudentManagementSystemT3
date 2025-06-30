@@ -61,22 +61,11 @@
                 </table>
             </div>
 
-            <!-- Enlaces adicionales -->
-            <div class="d-flex justify-content-between mt-4 flex-wrap">
-                <a class="btn btn-secondary mb-2" href="{% url 'registrar_grupo' %}">
-                    <i class="bi bi-plus-circle"></i> Registro de grupos
-                </a>
-                <a class="btn btn-info text-white mb-2" href="{% url 'buscar_estudiante_por_cedula' %}">
-                    <i class="bi bi-search"></i> Buscar estudiante por cédula
-                </a>
-                <a class="btn btn-dark mb-2" href="{% url 'generar_pdf_grupos' %}">
-                    <i class="bi bi-file-earmark-pdf"></i> Generar PDF de los grupos
-                </a>
-            </div>
+            
 
             <!-- Botón de volver -->
             <div class="text-center mt-4">
-                <a class="btn btn-outline-primary" href="{% url 'staff_dashboard' %}">
+                <a class="btn btn-outline-primary" href="{% url 'grupos_main' %}">
                     <i class="bi bi-arrow-left-circle"></i> Volver
                 </a>
             </div>

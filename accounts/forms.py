@@ -60,7 +60,7 @@ class CustomUserCreationForm(UserCreationForm):
         email = self.cleaned_data.get('email')
         #verifica si la CI existe en la lista de estudiantes
         if not Estudiante.objects.filter(email=email): ##########--
-            print("email no encontrada")
+            #print("email no encontrada")
             raise ValidationError('Error al verificar el correo: no encontrado')
 
         #verifica si la CI ya fue registrada en algun usuario de CustomUser

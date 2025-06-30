@@ -1,57 +1,97 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row d-flex justify-content-center">
-        <div class="col-lg-8">
-            <div class="row mt-4 d-flex justify-content-center">
-                <div class="col-lg-6 col-sm-6 col-md-6 header-formulario p-4 d-flex justify-content-center">
-                    <h3 class="text-center mt-2 mx-4 p-2 bg-titulo-formulario">Buscar Estudiante por Cédula</h3>
-                </div>
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-8">
+        <div class="row mt-4 d-flex justify-content-center">
+            <div class="col-lg-6 col-sm-6 col-md-6 header-formulario p-4 d-flex justify-content-center">
+                <h3 class="text-center mt-2 mx-4 p-2 bg-titulo-formulario">Buscar Estudiante por Cédula</h3>
             </div>
-
-            <!-- Formulario de búsqueda estilizado -->
-            <form method="POST" class="mb-4">
-                {% csrf_token %}
-                <div class="form-group">
+        </div>
+        <br>
+        <!-- Formulario de búsqueda -->
+        <form method="POST" class="mb-4">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-md-6">
                     <label for="cedula" class="form-label">Ingrese la cédula:</label>
                     <input type="text" class="form-control" name="cedula" id="cedula">
                 </div>
-                <br>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Buscar</button>
-                </div>
-            </form>
-            <!-- Resultado de la búsqueda -->
-            {% if estudiante_encontrado %}
+            </div>
+            <br>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+
+        <!-- Resultado de la búsqueda -->
+        {% if estudiante_encontrado %}
             <div class="alert alert-success" role="alert">
-                <h2>Estudiante Encontrado:</h2>
+                <h4>Estudiante Encontrado:</h4>
                 <p><strong>Nombre:</strong> {{ estudiante_encontrado.nombre }} {{ estudiante_encontrado.apellido }}</p>
                 <p><strong>Cédula:</strong> {{ estudiante_encontrado.cedula }}</p>
 
                 {% if grupo_encontrado %}
-                <div class="alert alert-info" role="alert">
-                    <h3>Este estudiante está inscrito en el grupo:</h3>
-                    <p><strong>Trayecto:</strong> {{ grupo_encontrado.trayecto_cursante }}</p>
-                    <p><strong>Docente Metodológico:</strong> {{ grupo_encontrado.docente_metodologico }}</p>
-                    <p><strong>Docente Académico:</strong> {{ grupo_encontrado.docente_academico }}</p>
-                </div>
+                    <!-- Tabla con información del grupo -->
+                    <div class="table-responsive mt-4">
+                        <table class="table table-striped table-hover align-middle text-center">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th scope="col">Trayecto</th>
+                                    <th scope="col">Docente Metodológico</th>
+                                    <th scope="col">Docente Académico</th>
+                                    <th scope="col">Estudiantes</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ grupo_encontrado.trayecto_cursante }}</td>
+                                    <td>{{ grupo_encontrado.docente_metodologico.nombre }} {{ grupo_encontrado.docente_metodologico.apellido }}</td>
+                                    <td>{{ grupo_encontrado.docente_academico.nombre }} {{ grupo_encontrado.docente_academico.apellido }}</td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0 text-start">
+                                            {% for estudiante in grupo_encontrado.estudiantes_lista %}
+                                                <li class="text-secondary small">
+                                                    {{ estudiante.nombre }} {{ estudiante.apellido }} - <span class="fw-bold">{{ estudiante.cedula }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-primary btn-sm mb-1" href="{% url 'editar_grupo' grupo_encontrado.id %}">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                        {% if roles != "secretaria" %}
+                                        <form action="{% url 'eliminar_grupo' grupo_encontrado.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este grupo?');">
+                                                <i class="bi bi-trash"></i> Borrar
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 {% else %}
-                <p class="text-danger">El estudiante no está inscrito en ningún grupo.</p>
+                    <p class="text-danger">El estudiante no está inscrito en ningún grupo.</p>
                 {% endif %}
             </div>
-            {% elif estudiante_encontrado is not None %}
+        {% elif estudiante_encontrado is not None %}
             <div class="alert alert-danger" role="alert">
                 <p>No se encontró un estudiante con esa cédula.</p>
             </div>
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
-    <!-- Botón de volver -->
-    <div class="text-center mt-4">
-        <a class="btn btn-outline-primary" href="{% url 'grupos_list' %}">
-            <i class="bi bi-arrow-left-circle"></i> Volver
-        </a>
-    </div>
-    <br>
+</div>
 
+<!-- Botón de volver -->
+<div class="text-center mt-4">
+    <a class="btn btn-outline-primary" href="{% url 'grupos_main' %}">
+        <i class="bi bi-arrow-left-circle"></i> Volver
+    </a>
+</div>
+<br>
 {% endblock %}

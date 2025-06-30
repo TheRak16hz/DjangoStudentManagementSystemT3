@@ -59,7 +59,9 @@
                     <span>{{ estudiante.name_est }} {{estudiante.apellido_est}} - {{ estudiante.ci_est }} - {{ estudiante.seccion }}</span>
                     <div>
                         <a href="{% url 'trayectos_edit' trayecto estudiante.ref_cedula_id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+                        {% if roles != "secretaria" %}
                         <a href="{% url 'trayectos_delete' trayecto estudiante.ref_cedula_id %}" class="btn btn-outline-danger btn-sm">Borrar</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

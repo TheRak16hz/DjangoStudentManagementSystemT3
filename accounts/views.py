@@ -224,7 +224,7 @@ def buscar_estudiante(request):
                 messages.error(request, f'Ocurrió un error: No se encontró un estudiante con esa cédula.')
                 
 
-    return render(request, 'buscar_estudiante.html', {'form': form, 'estudiante': estudiante})
+    return render(request, 'buscar_estudiante.html', {'form': form, 'estudiante': estudiante,  "roles":request.session["staff_role"]})
 
 def dashboard(request):
     estudiantes = Estudiante.objects.all()  # Obtener todos los estudiantes

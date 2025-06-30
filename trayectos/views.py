@@ -25,7 +25,7 @@ def buscar_estudiante_trayecto(request):
                 # Manejar cualquier otra excepción que pueda ocurrir
                 messages.error(request, f'Error. Esta cédula no se encuentra en el registro de trayectos')
 
-    return render(request, "buscar_estudiante_trayecto.html", {"form": form, 'estudiante': estudiante})
+    return render(request, "buscar_estudiante_trayecto.html", {"form": form, 'estudiante': estudiante, "roles":request.session["staff_role"]},)
 
 def trayectos_main(request):
     if request.method == "GET":
@@ -242,6 +242,7 @@ def trayectos_delete(request, tr, id):
             tray = Trayectos_all.objects.get(ref_cedula_id=id).trayecto_año
             Estudiante.objects.filter(cedula=ci).update(ultimo_año_cursado=tray)
             
+            ## eliminar el estudiante de la tabla de trayectos
             Trayectos_all.objects.filter(ref_cedula_id=id).delete()
             messages.success(request, f'Estudiante eliminado de {tr}.')
         return redirect("trayectos_view")

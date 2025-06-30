@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center text-primary mb-4">Estudiantes ya registrados</h1>
+
+            <!-- Enlace para volver a la lista de grupos -->
+            <div class="d-flex justify-content-center mb-3">
+                <a href="{% url 'registrar_grupo' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Volver
+                </a>
+                
+            </div>
+            <!-- Formulario de registro de grupo -->
+            <div class="card shadow-sm p-4">
+                <div class="mb-4">
+                    <ul class="list-group">
+                        {% for estudiante in estudiantes %}
+                        <li class="list-group-item">
+                            <strong>{{ estudiante.cedula }}</strong> - {{ estudiante.nombre }}
+                            {% if estudiante.id|stringformat:"s" in ids_estudiantes_grupos %}
+                                    <span class="badge bg-danger ms-2">Asignado</span>
+                                {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

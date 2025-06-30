@@ -11,16 +11,21 @@ def proyectos_home(request):
 
 def subir_archivo(request):
     user_id = request.session.get('user_id')  # ID del estudiante logueado
+    #print(user_id)
     if not user_id:
         messages.error(request, "No estás autenticado.")
         return redirect('login')
 
+    estudiante = Estudiante.objects.filter(cedula=request.session['user_cedula']).first()
+    estudiante_id = estudiante.id
+    print(estudiante_id)
     grupos = Grupos.objects.all()  # Obtener todos los grupos
 
     # Filtrar grupos a los que pertenece el estudiante
     grupos_usuario = [
-        grupo for grupo in grupos if str(user_id) in grupo.get_estudiantes()
+        grupo for grupo in grupos if str(estudiante_id) in grupo.get_estudiantes()
     ]
+    print(grupos_usuario)
 
     if not grupos_usuario:
         messages.error(request, "No estás asociado a ningún grupo.")
@@ -47,11 +52,14 @@ def subir_archivo(request):
 
 
 def listar_archivos(request):
-    user_id = request.session.get('user_id')
-    grupo = Grupos.objects.filter(estudiantes__icontains=str(user_id)).first()
+    estudiante = Estudiante.objects.filter(cedula=request.session['user_cedula']).first()
+    estudiante_id = estudiante.id
+    print(estudiante_id)
+    
+    grupo = Grupos.objects.filter(estudiantes__icontains=str(estudiante_id)).first()
     archivos = ArchivosEstudiantes.objects.filter(Grupo_est_id=grupo.id) if grupo else []
 
-    return render(request, 'archivos/listar_archivos.html', {'archivos': archivos, 'grupo': grupo, 'user_id': user_id})
+    return render(request, 'archivos/listar_archivos.html', {'archivos': archivos, 'grupo': grupo, 'estudiante_id': estudiante_id})
 
 def listar_archivos_all(request):
     # Obtener todos los archivos

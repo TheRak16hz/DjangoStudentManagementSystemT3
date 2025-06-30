@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Agregar Estudiante al Grupo</h2>
+
+    {% if not puede_agregar %}
+        <div class="alert alert-warning text-center">
+            Este grupo ya tiene 4 estudiantes. No se pueden añadir más.
+        </div>
+    {% endif %}
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group mb-3 w-50 mx-auto">
+            <input type="text" class="form-control" name="cedula" placeholder="Buscar por cédula" required>
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+    </form>
+
+    {% if estudiante_encontrado and not grupo_estudiante %}
+        <div class="alert alert-success">
+            <p><strong>Nombre:</strong> {{ estudiante_encontrado.nombre }} {{ estudiante_encontrado.apellido }}</p>
+            <p><strong>Cédula:</strong> {{ estudiante_encontrado.cedula }}</p>
+
+            {% if puede_agregar %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="cedula" value="{{ estudiante_encontrado.cedula }}">
+                <button type="submit" name="agregar_estudiante" class="btn btn-success mt-2">Agregar al grupo</button>
+            </form>
+            {% endif %}
+        </div>
+
+    {% elif grupo_estudiante %}
+        <div class="alert alert-danger">
+            <p>El estudiante ya se encuentra en un grupo:</p>
+            <ul>
+                <li><strong>Trayecto:</strong> {{ grupo_estudiante.trayecto_cursante }}</li>
+                <li><strong>Docente Metodológico:</strong> {{ docente_metodologico }}</li>
+                <li><strong>Docente Académico:</strong> {{ docente_academico }}</li>
+                <li><strong>Compañeros:</strong>
+                    <ul>
+                        {% for e in companeros %}
+                            <li>{{ e.nombre }} {{ e.apellido }} - {{ e.cedula }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    {% elif not estudiante_encontrado%}
+        <div class="alert alert-danger">
+            <p>No se encontró un estudiante con esa cédula.</p>
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'editar_grupo' grupo.id %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
+    </div>
+    <br>
+</div>
+{% endblock %}
