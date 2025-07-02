@@ -12,7 +12,7 @@
                         {% if prof.status == False %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span>
-                                {{ prof.nombre }} - {{ prof.cedula }} 
+                                {{ prof.nombre }} {{ prof.apellido }} - {{ prof.cedula }} 
                                 <span class="badge bg-danger">Inactivo</span>
                             </span>
                             <a href="{% url 'editar_profe' prof.id %}" class="btn btn-warning btn-sm">Editar</a>

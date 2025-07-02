@@ -141,40 +141,45 @@ def agregar_estudiantes_grupo(request, grupo_id):
     docente_metodologico = None
     docente_academico = None
     puede_agregar = len(estudiantes_ids) < max_estudiantes
+    mensaje_error = None
 
     if request.method == 'POST':
         cedula = request.POST.get('cedula', '').strip()
 
         try:
-            estudiante_encontrado = Estudiante.objects.get(cedula=cedula)
-            estudiante_id = estudiante_encontrado.id
+            estudiante = Estudiante.objects.get(cedula=cedula)
 
-            # Verificar si ya está en un grupo
-            todos_grupos = Grupos.objects.all()
-            for g in todos_grupos:
-                ids = [int(i.strip()) for i in g.estudiantes.split(',') if i.strip().isdigit()]
-                if estudiante_id in ids:
-                    grupo_estudiante = g
-                    # Obtener compañeros (excluyendo al estudiante mismo)
-                    companeros = Estudiante.objects.filter(id__in=ids).exclude(id=estudiante_id)
-                    # Obtener docentes
-                    try:
-                        docente_metodologico = Profesores.objects.get(id=g.docente_metodologico)
-                        docente_academico = Profesores.objects.get(id=g.docente_academico)
-                    except Profesores.DoesNotExist:
-                        docente_metodologico = docente_academico = None
-                    break
+            if not estudiante.status:
+                mensaje_error = "Estudiante No encontrado (I)"
+            elif Trayectos_all.objects.filter(ref_cedula=estudiante).first() is None:
+                mensaje_error = "Estudiante No encontrado"
+            else:
+                estudiante_encontrado = estudiante
+                estudiante_id = estudiante.id
 
-            # Agregar si es válido
-            if 'agregar_estudiante' in request.POST and not grupo_estudiante and puede_agregar:
-                estudiantes_ids.append(estudiante_id)
-                grupo.estudiantes = ','.join(map(str, estudiantes_ids))
-                grupo.save()
-                messages.success(request, 'Estudiante agregado al grupo exitosamente.')
-                return redirect('editar_grupo', grupo.id)
+                # Verificar si ya está en otro grupo
+                for g in Grupos.objects.all():
+                    ids = [int(i.strip()) for i in g.estudiantes.split(',') if i.strip().isdigit()]
+                    if estudiante_id in ids:
+                        grupo_estudiante = g
+                        companeros = Estudiante.objects.filter(id__in=ids).exclude(id=estudiante_id)
+                        try:
+                            docente_metodologico = Profesores.objects.get(id=g.docente_metodologico)
+                            docente_academico = Profesores.objects.get(id=g.docente_academico)
+                        except Profesores.DoesNotExist:
+                            docente_metodologico = docente_academico = None
+                        break
+
+                # Agregar estudiante si está disponible
+                if 'agregar_estudiante' in request.POST and not grupo_estudiante and puede_agregar:
+                    estudiantes_ids.append(estudiante_id)
+                    grupo.estudiantes = ','.join(map(str, estudiantes_ids))
+                    grupo.save()
+                    messages.success(request, 'Estudiante agregado al grupo exitosamente.')
+                    return redirect('editar_grupo', grupo.id)
 
         except Estudiante.DoesNotExist:
-            estudiante_encontrado = None
+            mensaje_error = "No se encontró un estudiante con esa cédula."
 
     return render(request, 'agregar_estudiantes_grupo.html', {
         'grupo': grupo,
@@ -184,7 +189,10 @@ def agregar_estudiantes_grupo(request, grupo_id):
         'companeros': companeros,
         'docente_metodologico': f"{docente_metodologico.nombre} {docente_metodologico.apellido}" if docente_metodologico else "No disponible",
         'docente_academico': f"{docente_academico.nombre} {docente_academico.apellido}" if docente_academico else "No disponible",
+        'mensaje_error': mensaje_error
     })
+
+
 
 
 ##########
@@ -246,49 +254,59 @@ def editar_grupo(request, grupo_id):
 
 def buscar_estudiante_por_cedula(request):
     estudiante_encontrado = None
-    grupo_data = None  # Esta variable contendrá todos los datos del grupo
+    grupo_data = None
+    mensaje_inactivo = None
+    mensaje_no_encontrado = None
+    mostrar_ni_trayecto = False  # NUEVO
 
     if request.method == 'POST':
         cedula = request.POST.get('cedula')
 
         try:
-            # 1. Buscar el estudiante por cédula
-            estudiante_encontrado = Estudiante.objects.get(cedula=cedula)
-            estudiante_id = estudiante_encontrado.id
+            estudiante = Estudiante.objects.get(cedula=cedula)
 
-            # 2. Buscar si está en algún grupo
-            grupos = Grupos.objects.all()
-            for grupo in grupos:
-                # Obtener lista limpia de IDs
-                estudiantes_ids = [est_id.strip() for est_id in grupo.get_estudiantes() if est_id.strip()]
-                estudiantes_ids = [int(est_id) for est_id in estudiantes_ids if est_id.isdigit()]
+            if estudiante.status is False:
+                mensaje_inactivo = "Estudiante no encontrado (I)"
+            else:
+                estudiante_encontrado = estudiante
+                estudiante_id = estudiante.id
 
-                if estudiante_id in estudiantes_ids:
-                    # 3. Obtener los docentes como objetos
-                    docente_metodologico = Profesores.objects.get(id=grupo.docente_metodologico)
-                    docente_academico = Profesores.objects.get(id=grupo.docente_academico)
+                # Verificamos si está en Trayectos_all
+                if not Trayectos_all.objects.filter(ci_est=cedula):
+                    mostrar_ni_trayecto = True
+                else:
+                    mostrar_ni_trayecto = False
 
-                    # 4. Obtener los estudiantes del grupo como queryset
-                    estudiantes = Estudiante.objects.filter(id__in=estudiantes_ids)
+                grupos = Grupos.objects.all()
+                for grupo in grupos:
+                    estudiantes_ids = [int(est_id.strip()) for est_id in grupo.get_estudiantes() if est_id.strip().isdigit()]
+                    if estudiante_id in estudiantes_ids:
+                        docente_metodologico = Profesores.objects.get(id=grupo.docente_metodologico)
+                        docente_academico = Profesores.objects.get(id=grupo.docente_academico)
+                        estudiantes = Estudiante.objects.filter(id__in=estudiantes_ids)
 
-                    # 5. Preparar el diccionario con la info del grupo
-                    grupo_data = {
-                        'id': grupo.id,
-                        'trayecto_cursante': grupo.trayecto_cursante,
-                        'docente_metodologico': docente_metodologico,
-                        'docente_academico': docente_academico,
-                        'estudiantes_lista': estudiantes,
-                    }
-                    break  # Salir del bucle una vez encontrado el grupo
+                        grupo_data = {
+                            'id': grupo.id,
+                            'trayecto_cursante': grupo.trayecto_cursante,
+                            'docente_metodologico': docente_metodologico,
+                            'docente_academico': docente_academico,
+                            'estudiantes_lista': estudiantes,
+                        }
+                        break
 
         except Estudiante.DoesNotExist:
-            estudiante_encontrado = None
+            mensaje_no_encontrado = "No se encontró un estudiante con esa cédula."
 
     return render(request, 'buscar_estudiante_g.html', {
         'estudiante_encontrado': estudiante_encontrado,
-        "roles":request.session["staff_role"],
-        'grupo_encontrado': grupo_data  # Este contiene toda la info que tu HTML necesita
+        'grupo_encontrado': grupo_data,
+        'mensaje_inactivo': mensaje_inactivo,
+        'mensaje_no_encontrado': mensaje_no_encontrado,
+        'mostrar_ni_trayecto': mostrar_ni_trayecto,  # PASAMOS la variable
+        'roles': request.session["staff_role"],
     })
+
+
 
 
 ###
@@ -311,29 +329,44 @@ def registrar_grupo_individual(request):
     cedula = request.GET.get('cedula')
     estudiante_encontrado = None
     mensaje_grupo = None
+    mensaje_inactivo = None
+    mensaje_no_trayecto = None
+
     if cedula:
         try:
-            estudiante_encontrado = Estudiante.objects.get(cedula=cedula)
-            # Verifica si ya está en un grupo
-            grupo = Grupos.objects.filter(estudiantes__contains=str(estudiante_encontrado.id)).first()
+            
+            estudiante_temp = Estudiante.objects.get(cedula=cedula)
+            #print(estudiante_temp, estudiante_temp.status)
+            if estudiante_temp.status is False:
+                mensaje_inactivo = "No se encontró un estudiante con esa cédula. (I)"
+
+            # Buscar primero en Trayectos_all
+            trayecto = Trayectos_all.objects.get(ci_est=cedula)
+            estudiante = trayecto.ref_cedula
+        
+            # Verificar si ya está en un grupo
+            grupo = Grupos.objects.filter(estudiantes__contains=str(estudiante.id)).first()
             if grupo:
                 compañeros_ids = grupo.get_estudiantes()
-                compañeros = Estudiante.objects.filter(id__in=compañeros_ids).exclude(id=estudiante_encontrado.id)
+                compañeros = Estudiante.objects.filter(id__in=compañeros_ids).exclude(id=estudiante.id)
                 mensaje_grupo = {
                     "trayecto": grupo.trayecto_cursante,
                     "docente_m": grupo.docente_metodologico,
                     "docente_a": grupo.docente_academico,
                     "compañeros": compañeros
                 }
-                estudiante_encontrado = None  # No permitir agregar
-        except Estudiante.DoesNotExist:
-            estudiante_encontrado = None
-            messages.warning(request, "No se encontró un estudiante con esa cédula.")
+            else:
+                estudiante_encontrado = estudiante
+
+        except Trayectos_all.DoesNotExist:
+            mensaje_no_trayecto = "No se encontró un estudiante en Trayectos con esa cédula."
 
     return render(request, 'registrar_grupo_individual.html', {
         'estudiantes_temp': estudiantes_temp,
         'estudiante_encontrado': estudiante_encontrado,
         'mensaje_grupo': mensaje_grupo,
+        'mensaje_inactivo': mensaje_inactivo,
+        'mensaje_no_trayecto': mensaje_no_trayecto,
     })
 
 # Añadir estudiante a sesión

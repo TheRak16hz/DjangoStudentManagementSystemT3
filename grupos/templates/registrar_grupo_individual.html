@@ -29,6 +29,14 @@
                 {% endfor %}
             </ul>
         </div>
+    {% elif mensaje_inactivo %}
+    <div class="alert alert-warning">
+        <strong>{{ mensaje_inactivo }}</strong>
+    </div>
+    {% elif mensaje_no_trayecto %}
+    <div class="alert alert-warning">
+        <strong>{{ mensaje_no_trayecto }}</strong>
+    </div>
     {% endif %}
 
     <hr>

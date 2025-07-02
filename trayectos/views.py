@@ -102,7 +102,8 @@ def asignar_estudiantes(request):
     elif request.method == "GET":
         form = AsignarEstudiantesForm()
     # Obtener todos los estudiantes
-    estudiantes_todos = Estudiante.objects.all()
+    estudiantes_noFilter = Estudiante.objects.all()
+    estudiantes_todos = [e for e in estudiantes_noFilter if e.status]
 
     # Obtener las cédulas de los estudiantes ya registrados en Trayectos_all
     cedulas_temp = set(est.ci_est for est in Trayectos_all.objects.all())
@@ -141,6 +142,12 @@ def asignar_estudiantes_busqueda(request):
                 try:
                     estudiante_temp = get_object_or_404(Estudiante, cedula=cedula)
                     #print(estudiante_temp)
+                    
+                    #verificar si esta activo o no
+                    if estudiante_temp.status is False:
+                        messages.error(request, f'Ocurrió un error: No se encontró un estudiante con esa cédula. I')
+                        return redirect('asignar_estudiantes_busqueda')
+                    
 
                     if not Trayectos_all.objects.filter(ref_cedula=estudiante_temp):
                         if not Trayectos_temp.objects.filter(ref_cedula=estudiante_temp):

@@ -55,7 +55,7 @@
                         </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center">{{ profesor.nombre }}</td>
+                            <td class="text-center">{{ profesor.nombre }} {{ profesor.apellido }}</td>
                             <td class="text-center">{{ profesor.cedula }}</td>
                             <td class="text-center">
                                 <a href="{% url 'editar_profe' profesor.id %}">

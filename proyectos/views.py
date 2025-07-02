@@ -87,7 +87,6 @@ def listar_archivos_all(request):
                     ]
                 }
             })
-
     return render(request, 'archivos/listar_archivos_staff.html', {
         'archivos_con_grupos': archivos_con_grupos,
     })

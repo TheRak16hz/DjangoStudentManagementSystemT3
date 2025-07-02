@@ -57,7 +57,7 @@
                         {% for estudiante in estudiantes %}
                         {% if estudiante.status == True %}
                         <tr>
-                            <td class="text-center">{{ estudiante.nombre }}</td>
+                            <td class="text-center">{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
                             <td class="text-center">{{ estudiante.cedula }}</td>
                             <td class="text-center"><span class="badge bg-success">Activo 🟩</span></td>
                             <td class="text-center">

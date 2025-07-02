@@ -76,12 +76,21 @@
                         </table>
                     </div>
                 {% else %}
-                    <p class="text-danger">El estudiante no está inscrito en ningún grupo.</p>
+
+                <p class="text-danger">El estudiante no está inscrito en ningún grupo {% if mostrar_ni_trayecto %} , ni en ningún Trayecto {% endif %} </p>
                 {% endif %}
             </div>
         {% elif estudiante_encontrado is not None %}
             <div class="alert alert-danger" role="alert">
                 <p>No se encontró un estudiante con esa cédula.</p>
+            </div>
+        {% elif mensaje_inactivo %}
+            <div class="alert alert-warning" role="alert">
+                <p>{{ mensaje_inactivo }}</p>
+            </div>
+        {% elif mensaje_no_encontrado %}
+            <div class="alert alert-danger" role="alert">
+                <p>{{ mensaje_no_encontrado }}</p>
             </div>
         {% endif %}
     </div>

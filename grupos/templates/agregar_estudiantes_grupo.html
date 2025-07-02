@@ -13,12 +13,17 @@
     <form method="post" class="mb-4">
         {% csrf_token %}
         <div class="input-group mb-3 w-50 mx-auto">
-            <input type="text" class="form-control" name="cedula" placeholder="Buscar por cédula" required>
+            <input type="text" class="form-control" name="cedula" placeholder="Buscar por cédula (en Trayectos)" required>
             <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
     </form>
 
-    {% if estudiante_encontrado and not grupo_estudiante %}
+    {% if mensaje_error %}
+        <div class="alert alert-danger text-center">
+            <p><strong>{{ mensaje_error }}</strong></p>
+        </div>
+
+    {% elif estudiante_encontrado and not grupo_estudiante %}
         <div class="alert alert-success">
             <p><strong>Nombre:</strong> {{ estudiante_encontrado.nombre }} {{ estudiante_encontrado.apellido }}</p>
             <p><strong>Cédula:</strong> {{ estudiante_encontrado.cedula }}</p>
@@ -47,10 +52,6 @@
                     </ul>
                 </li>
             </ul>
-        </div>
-    {% elif not estudiante_encontrado%}
-        <div class="alert alert-danger">
-            <p>No se encontró un estudiante con esa cédula.</p>
         </div>
     {% endif %}
 

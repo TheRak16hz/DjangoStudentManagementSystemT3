@@ -43,7 +43,7 @@
                             {% for prof in profes %}
                                 {% if prof.status == True %}
                                     <tr>
-                                        <td class="text-center">{{ prof.nombre }}</td>
+                                        <td class="text-center">{{ prof.nombre }} {{ prof.apellido }}</td>
                                         <td class="text-center">{{ prof.cedula }}</td>
                                         <td class="text-center">
                                             <a href="{% url 'editar_profe' prof.id %}">
